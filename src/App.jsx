@@ -1,16 +1,9 @@
 import keyring from '@polkadot/ui-keyring';
-import { Message, Step, Select, Button, Header, Form, Input, Card, Container, Dimmer, Loader, Grid, Dropdown, Image, Menu } from "semantic-ui-react";
-import Intro from "./Intro";
-// import ChainState from "./ChainState";
-import DeveloperConsole from "./DeveloperConsole";
-import Events from "./Events";
-// import Extrinsics from "./Extrinsics";
-import NodeInfo from "./NodeInfo";
-// import Transfer from "./Transfer";
-// import Identity from "./Identity";
-import "semantic-ui-css/semantic.min.css";
 import { ApiPromise, WsProvider } from "@polkadot/api";
-// import { web3Accounts, web3Enable } from "@polkadot/extension-dapp";
+import { Message, Step, Select, Button, Header, Form, Input, Card, Container, Dimmer, Loader, Grid, Dropdown, Image, Menu } from "semantic-ui-react";
+import DeveloperConsole from "./DeveloperConsole";
+import NodeInfo from "./NodeInfo";
+import "semantic-ui-css/semantic.min.css";
 import React, { useState, useEffect, createRef } from "react";
 const { mnemonicGenerate, mnemonicToSeed, naclKeypairFromSeed } = require('@polkadot/util-crypto');
 const { encodeAddress } = require('@polkadot/keyring');
@@ -35,6 +28,7 @@ export default function App() {
     { text: 'Cosmos', value: 'cosmos' },
     { text: 'RIF (Bitcoin)', value: 'rif' },
   ]
+
   useEffect(() => { 
 
     const provider = new WsProvider(WS_PROVIDER);
@@ -48,7 +42,7 @@ export default function App() {
       }
       return JSON.parse(_user);
     }
-    
+
     // 1. Load all accounts into Keyring
     console.log("1 ** Load Accounts to keyring")
     keyring.loadAll({
@@ -211,6 +205,7 @@ export default function App() {
   }
 
   const did_info = () => {
+    console.log(user)
     let content = '';
     if (addUser) {
       content = (<Loader active inline='centered' />);
@@ -235,8 +230,10 @@ export default function App() {
                 <label>User handler</label>
                 <Input onChange={(_, data) => {setName(data.value)}} label="@" placeholder="identity" state="id_name" type="text"/>
               </Form.Field>
+              <Form.Button>
+              <Button type="submit" disabled={id_name.length<3} onClick={() => saveIdentity()} >Create Identity</Button>
+              </Form.Button>
             </Form>
-            
           </Container>
         </Card.Content>
       )
@@ -256,6 +253,7 @@ export default function App() {
             <Card.Description>
               <b>Decentralized Identifiers (DIDs)</b> are a new type of identifier for verifiable, decentralized digital identity. These new identifiers are designed to enable the controller of a DID to prove control over it and to be implemented independently of any centralized registry, identity provider, or certificate authority
               <br/><a href="https://w3c-ccg.github.io/did-spec/">W3C: Decentralized Identifiers (DIDs) v0.13</a>
+              <br/><Button onClick={() => setStep(2)} >Go to Credentials</Button>
             </Card.Description>
           </Card.Content>
         </Card>
@@ -382,7 +380,7 @@ export default function App() {
                 
                 <Step.Content>
                   <Step.Title>Credentials</Step.Title>
-                  <Step.Description>Personal Information</Step.Description>
+                  <Step.Description>Name, Email</Step.Description>
                 </Step.Content>
               </Step>
             </Step.Group>
